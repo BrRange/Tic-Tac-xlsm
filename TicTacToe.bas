@@ -1,5 +1,6 @@
 Attribute VB_Name = "TicTacToe"
-Private Function winCell(board As Range) As Range
+Dim board As Range
+Private Function winCell() As Range
     For i = 1 To 3:
         If WorksheetFunction.CountIf(board.Columns(i), "o") = 2 And WorksheetFunction.CountIf(board.Columns(i), "") = 1 Then
             Set winCell = board.Columns(i)
@@ -10,7 +11,7 @@ Private Function winCell(board As Range) As Range
             Exit Function
         End If
     Next i
-    If -(board.Range("A1").Value = "o") - (board.Range("B2").Value = "o") - (board.Range("C3") = "o") = 2 And -(board.Range("A1").Value = "") - (board.Range("B2").Value = "") - (board.Range("C3") = "") = 1 Then
+    If -(board.Range("A1").Value = "o") - (board.Range("B2").Value = "o") - (board.Range("C3") = "o") = 2 And -(board.Range("C1").Value = "") - (board.Range("B2").Value = "") - (board.Range("A3") = "") = 1 Then
         Set winCell = board.Range("A1,B2,C3")
         Exit Function
     End If
@@ -28,7 +29,7 @@ Private Function winCell(board As Range) As Range
             Exit Function
         End If
     Next i
-    If -(board.Range("A1").Value = "x") - (board.Range("B2").Value = "x") - (board.Range("C3") = "x") = 2 And -(board.Range("C1").Value = "") - (board.Range("B2").Value = "") - (board.Range("A3") = "") = 1 Then
+    If -(board.Range("A1").Value = "x") - (board.Range("B2").Value = "x") - (board.Range("C3") = "x") = 2 And -(board.Range("A1").Value = "") - (board.Range("B2").Value = "") - (board.Range("C3") = "") = 1 Then
         Set winCell = board.Range("A1,B2,C3")
         Exit Function
     End If
@@ -38,15 +39,17 @@ Private Function winCell(board As Range) As Range
     End If
     Set winCell = board
 End Function
-Private Function botPlay(board As Range) As Range
-    Set botPlay = winCell(board)
-    If botPlay.cells.Count = 3 Then
-        For Each c In botPlay.cells
-            If c.Value = "" Then
-                Set botPlay = c
-                Exit Function
-            End If
-        Next c
+Private Function botPlay() As Range
+    If WorksheetFunction.CountIf(board, "") <= 6 Then
+        Set botPlay = winCell
+        If botPlay.cells.Count = 3 Then
+            For Each c In botPlay.cells
+                If c.Value = "" Then
+                    Set botPlay = c
+                    Exit Function
+                End If
+            Next c
+        End If
     End If
     Dim slot, freeSlots As Integer
     freeSlots = WorksheetFunction.CountIf(board, "")
@@ -59,55 +62,55 @@ Private Function botPlay(board As Range) As Range
         End If
     Next c
 End Function
-Private Function checkWin(board As Range) As Boolean
+Private Function checkWin() As Boolean
     checkWin = True
     For i = 1 To 3:
         If WorksheetFunction.CountIf(board.Columns(i), "x") = 3 Then
-            Call colorRange(board.Columns(i), RGB(0, 255, 0))
             board.Range("A6").Value = board.Range("A6").Value + 1
+            Call colorRange(board.Columns(i), RGB(0, 255, 0))
             Exit Function
         End If
         If WorksheetFunction.CountIf(board.Rows(i), "x") = 3 Then
-            Call colorRange(board.Rows(i), RGB(0, 255, 0))
             board.Range("A6").Value = board.Range("A6").Value + 1
+            Call colorRange(board.Rows(i), RGB(0, 255, 0))
             Exit Function
         End If
     Next i
     If board.Range("A1").Value = board.Range("B2") And board.Range("B2") = board.Range("C3") And board.Range("A1") = "x" Then
-        Call colorRange(board.Range("A1,B2,C3"), RGB(0, 255, 0))
         board.Range("A6").Value = board.Range("A6").Value + 1
+        Call colorRange(board.Range("A1,B2,C3"), RGB(0, 255, 0))
         Exit Function
     End If
     If board.Range("C1").Value = board.Range("B2") And board.Range("B2") = board.Range("A3") And board.Range("C1") = "x" Then
-        Call colorRange(board.Range("C1,B2,A3"), RGB(0, 255, 0))
         board.Range("A6").Value = board.Range("A6").Value + 1
+        Call colorRange(board.Range("C1,B2,A3"), RGB(0, 255, 0))
         Exit Function
     End If
     For i = 1 To 3:
         If WorksheetFunction.CountIf(board.Columns(i), "o") = 3 Then
-            Call colorRange(board.Columns(i), RGB(255, 0, 0))
             board.Range("C6").Value = board.Range("C6").Value + 1
+            Call colorRange(board.Columns(i), RGB(255, 0, 0))
             Exit Function
         End If
         If WorksheetFunction.CountIf(board.Rows(i), "o") = 3 Then
-            Call colorRange(board.Rows(i), RGB(255, 0, 0))
             board.Range("C6").Value = board.Range("C6").Value + 1
+            Call colorRange(board.Rows(i), RGB(255, 0, 0))
             Exit Function
         End If
     Next i
     If board.Range("A1").Value = board.Range("B2") And board.Range("B2") = board.Range("C3") And board.Range("A1") = "o" Then
-        Call colorRange(board.Range("A1,B2,C3"), RGB(255, 0, 0))
         board.Range("C6").Value = board.Range("C6").Value + 1
+        Call colorRange(board.Range("A1,B2,C3"), RGB(255, 0, 0))
         Exit Function
     End If
     If board.Range("C1").Value = board.Range("B2") And board.Range("B2") = board.Range("A3") And board.Range("C1") = "o" Then
-        Call colorRange(board.Range("C1,B2,A3"), RGB(255, 0, 0))
         board.Range("C6").Value = board.Range("C6").Value + 1
+        Call colorRange(board.Range("C1,B2,A3"), RGB(255, 0, 0))
         Exit Function
     End If
     If WorksheetFunction.CountIf(board, "") = 0 Then
-        Call colorRange(board, RGB(255, 255, 0))
         board.Range("B6").Value = board.Range("B6").Value + 1
+        Call colorRange(board, RGB(255, 255, 0))
         Exit Function
     End If
     checkWin = False
@@ -116,20 +119,21 @@ Sub colorRange(cells As Range, clr As Long)
     cells.Interior.Color = clr
 End Sub
 Sub newGame()
-    Plan1.Range("B2:D4").Value = ""
-    Application.Wait (Now + TimeValue("0:00:01"))
-    Call colorRange(Plan1.Range("B2:D4"), RGB(255, 255, 255))
-    If Rnd >= 0.5 Then botPlay(Plan1.Range("B2:D4")).Value = "o"
+    board.Value = ""
+    Application.Wait (Now + TimeValue("0:0:1"))
+    Call colorRange(board, RGB(255, 255, 255))
+    If Rnd >= 0.5 Then botPlay.Value = "o"
 End Sub
 Sub mainClick(tile As Range)
+    Set board = Plan1.Range("B2:D4")
     If tile.Value = "" Then
         tile.Value = "x"
-        If checkWin(Plan1.Range("B2:D4")) Then
+        If checkWin Then
             Call newGame
             Exit Sub
         End If
-        botPlay(Plan1.Range("B2:D4")).Value = "o"
-        If checkWin(Plan1.Range("B2:D4")) Then Call newGame
+        botPlay.Value = "o"
+        If checkWin Then Call newGame
     End If
 End Sub
 Sub click1()
