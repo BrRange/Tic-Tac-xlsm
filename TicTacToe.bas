@@ -10,7 +10,7 @@ Private Function winCell(board As Range) As Range
             Exit Function
         End If
     Next i
-    If -(board.Range("A1").Value = "o") - (board.Range("B2").Value = "o") - (board.Range("C3") = "o") = 2 And -(board.Range("C1").Value = "") - (board.Range("B2").Value = "") - (board.Range("A3") = "") = 1 Then
+    If -(board.Range("A1").Value = "o") - (board.Range("B2").Value = "o") - (board.Range("C3") = "o") = 2 And -(board.Range("A1").Value = "") - (board.Range("B2").Value = "") - (board.Range("C3") = "") = 1 Then
         Set winCell = board.Range("A1,B2,C3")
         Exit Function
     End If
